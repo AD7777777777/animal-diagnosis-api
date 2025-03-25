@@ -1,0 +1,55 @@
+// index.js
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const { OpenAI } = require('openai');
+const scrapeSymptoms = require('./utils/scraper');
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+app.get('/', (req, res) => {
+  res.send('Animal Diagnosis API is running');
+});
+
+app.post('/diagnose', async (req, res) => {
+  const { animalType, age, size, weight, symptoms } = req.body;
+
+  const prompt = `
+  You're a veterinarian AI. Diagnose based on details:
+
+  Animal: ${animalType}
+  Age: ${age}
+  Size: ${size}
+  Weight: ${weight} kg
+  Symptoms: ${symptoms}
+
+  Provide clearly:
+  - Diagnosis
+  - Three common treatments
+  `;
+
+  try {
+    const [aiResult, articles] = await Promise.all([
+      openai.chat.completions.create({
+        model: 'gpt-3.5-turbo', // Changed from gpt-4 to gpt-3.5-turbo
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.2,
+        max_tokens: 500,
+      }),
+      scrapeSymptoms(`${animalType} ${symptoms}`),
+    ]);
+
+    const aiResponse = aiResult.choices[0].message.content;
+
+    res.json({ diagnosis: aiResponse, relatedArticles: articles });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error processing request.' });
+  }
+});
+
+app.listen(5000, () => console.log('Server running on port 5000'));
