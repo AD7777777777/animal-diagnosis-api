@@ -3,7 +3,6 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { OpenAI } = require('openai');
-const scrapeSymptoms = require('./utils/scraper');
 
 const app = express();
 app.use(express.json());
