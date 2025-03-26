@@ -16,13 +16,20 @@ app.get('/', (req, res) => {
 // Async /diagnose route
 app.post('/diagnose', async (req, res) => {
   try {
-    // Simulate async operations (you can replace these with real functions)
-    const aiResult = "Example AI diagnosis";
-    const articles = ["Article 1", "Article 2", "Article 3"];
+    const { animalType, age, size, weight, symptoms } = req.body;
+
+    // Simulated diagnosis and treatments
+    const aiResult = `Example diagnosis for a ${age}-year-old ${size} ${animalType} showing symptoms of ${symptoms}.`;
+
+    const treatments = [
+      "Take to a licensed veterinarian for examination",
+      "Monitor symptoms for 24-48 hours",
+      "Ensure adequate hydration and rest"
+    ];
 
     res.json({
       diagnosis: aiResult,
-      articles: articles
+      treatments: treatments
     });
   } catch (error) {
     console.error('Diagnosis failed:', error);
@@ -35,3 +42,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
