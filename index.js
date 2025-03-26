@@ -14,20 +14,22 @@ app.get('/', (req, res) => {
   res.send('Animal Diagnosis API is running');
 });
 
-app.post('/diagnose', (req, res) => {
+app.post('/diagnose', async (req, res) => {
   console.log("Received diagnosis request:", req.body);
 
   const { animalType, age, size, weight, symptoms } = req.body;
 
+  // Just simulate a diagnosis for now
   res.json({
-    diagnosis: "Example diagnosis for " + animalType,
+    diagnosis: `Example diagnosis for a ${age}-year-old ${size} ${animalType}`,
     treatments: [
-      "Visit vet",
-      "Give rest",
-      "Prescribed medication"
+      "Visit a vet",
+      "Monitor symptoms for 48 hours",
+      "Hydration and rest"
     ]
   });
 });
+
 
   const prompt = `
   You're a veterinarian AI. Diagnose based on details:
