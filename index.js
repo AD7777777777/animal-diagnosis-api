@@ -15,20 +15,22 @@ app.get('/', (req, res) => {
 });
 
 app.post('/diagnose', async (req, res) => {
-  console.log("Received diagnosis request:", req.body);
+  try {
+    const [aiResult, articles] = await Promise.all([
+      getDiagnosisFromOpenAI(req.body),
+      getArticlesFromWeb(req.body.symptoms),
+    ]);
 
-  const { animalType, age, size, weight, symptoms } = req.body;
-
-  // Just simulate a diagnosis for now
-  res.json({
-    diagnosis: `Example diagnosis for a ${age}-year-old ${size} ${animalType}`,
-    treatments: [
-      "Visit a vet",
-      "Monitor symptoms for 48 hours",
-      "Hydration and rest"
-    ]
-  });
+    res.json({
+      diagnosis: aiResult,
+      articles: articles,
+    });
+  } catch (error) {
+    console.error('Diagnosis failed:', error);
+    res.status(500).json({ error: 'Diagnosis error' });
+  }
 });
+
 
 
   const prompt = `
