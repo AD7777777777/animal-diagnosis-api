@@ -20,9 +20,25 @@ app.get('/', (req, res) => {
 // POST /diagnose route using OpenAI
 app.post('/diagnose', async (req, res) => {
   try {
-    const { animalType, age, size, weight, symptoms } = req.body;
+    const { animalType, age, size, weight, symptoms, language = 'en' } = req.body;
 
-    const prompt = `
+    // Prompt in English or Hebrew
+    const prompt =
+      language === 'he'
+        ? `
+אתה עוזר וטרינרי מבוסס בינה מלאכותית. על סמך הפרטים הבאים, ספק:
+1. אבחנה אפשרית
+2. שלוש דרכי טיפול נפוצות
+3. הבהרה שחובה לפנות לווטרינר מוסמך
+
+פרטי החיה:
+- סוג חיה: ${animalType}
+- גיל: ${age}
+- גודל: ${size}
+- משקל: ${weight}
+- סימפטומים: ${symptoms}
+`
+        : `
 You are a veterinary assistant AI. Based on the following details, provide:
 1. A possible diagnosis
 2. Three common treatments
