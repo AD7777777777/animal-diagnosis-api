@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/diagnose', (req, res) => {
-  console.log("Received diagnosis request:", req.body); // 🐞 debug
+  console.log("Received diagnosis request:", req.body);
 
   const { animalType, age, size, weight, symptoms } = req.body;
 
